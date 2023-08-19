@@ -1,4 +1,4 @@
-package com.tealeaf.leona.proxy;
+package org.lyora.leona.proxy;
 
 import org.apache.commons.lang3.reflect.FieldUtils;
 

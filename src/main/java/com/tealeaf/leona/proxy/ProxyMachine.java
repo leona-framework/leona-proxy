@@ -1,4 +1,4 @@
-package com.tealeaf.leona.proxy;
+package org.lyora.leona.proxy;
 
 import org.springframework.aop.Advisor;
 

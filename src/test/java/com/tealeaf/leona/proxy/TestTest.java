@@ -1,4 +1,4 @@
-package com.tealeaf.leona.proxy;
+package org.lyora.leona.proxy;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;

@@ -1,4 +1,4 @@
-package com.tealeaf.leona.proxy.aspects;
+package org.lyora.leona.proxy.aspects;
 
 import org.springframework.core.annotation.AliasFor;
 

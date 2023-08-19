@@ -1,6 +1,6 @@
-package com.tealeaf.leona.proxy;
+package org.lyora.leona.proxy;
 
-import com.tealeaf.leona.proxy.aspects.AspectProducerAspect;
+import org.lyora.leona.proxy.aspects.AspectProducerAspect;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;

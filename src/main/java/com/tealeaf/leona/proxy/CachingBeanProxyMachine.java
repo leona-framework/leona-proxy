@@ -1,6 +1,6 @@
-package com.tealeaf.leona.proxy;
+package org.lyora.leona.proxy;
 
-import com.tealeaf.leona.core.utils.SpringBridgeUtils;
+import org.lyora.leona.core.utils.SpringBridgeUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.ByteBuddy;

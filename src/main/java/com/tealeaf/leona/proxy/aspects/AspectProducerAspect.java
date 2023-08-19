@@ -1,7 +1,7 @@
-package com.tealeaf.leona.proxy.aspects;
+package org.lyora.leona.proxy.aspects;
 
-import com.tealeaf.leona.proxy.ProxyMachine;
-import com.tealeaf.leona.proxy.ReflectionFieldsCopier;
+import org.lyora.leona.proxy.ProxyMachine;
+import org.lyora.leona.proxy.ReflectionFieldsCopier;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -28,10 +28,10 @@ public class AspectProducerAspect {
     private final AspectBeanRegistry aspectBeanRegistry;
     private final ProxyMachine proxyMachine;
 
-    @Pointcut("within(@com.tealeaf.leona.proxy.aspects.ProxyProducer *)")
+    @Pointcut("within(@org.lyora.leona.proxy.aspects.ProxyProducer *)")
     public void findAspectProducers() {}
 
-    @Pointcut("execution(!void *(..)) && !execution(@com.tealeaf.leona.proxy.aspects.ProxyProducer.ExcludeAlways * *(..))")
+    @Pointcut("execution(!void *(..)) && !execution(@org.lyora.leona.proxy.aspects.ProxyProducer.ExcludeAlways * *(..))")
     public void findNonVoidMethods() {}
 
     @Pointcut("findAspectProducers() && findNonVoidMethods()")

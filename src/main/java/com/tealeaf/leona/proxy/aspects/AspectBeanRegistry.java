@@ -1,9 +1,9 @@
-package com.tealeaf.leona.proxy.aspects;
+package org.lyora.leona.proxy.aspects;
 
-import com.tealeaf.leona.core.utils.AnnotationHelper;
-import com.tealeaf.leona.proxy.CachingBeanProxyMachine;
-import com.tealeaf.leona.proxy.ProxyMachine;
-import com.tealeaf.leona.proxy.ReflectionFieldsCopier;
+import org.lyora.leona.core.utils.AnnotationHelper;
+import org.lyora.leona.proxy.CachingBeanProxyMachine;
+import org.lyora.leona.proxy.ProxyMachine;
+import org.lyora.leona.proxy.ReflectionFieldsCopier;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.annotation.Aspect;
