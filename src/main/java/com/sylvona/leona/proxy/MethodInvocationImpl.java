@@ -1,4 +1,4 @@
-package org.lyora.leona.proxy;
+package com.sylvona.leona.proxy;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

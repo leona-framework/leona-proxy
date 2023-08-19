@@ -1,9 +1,9 @@
-package org.lyora.leona.proxy.aspects;
+package com.sylvona.leona.proxy.aspects;
 
-import org.lyora.leona.core.utils.AnnotationHelper;
-import org.lyora.leona.proxy.CachingBeanProxyMachine;
-import org.lyora.leona.proxy.ProxyMachine;
-import org.lyora.leona.proxy.ReflectionFieldsCopier;
+import com.sylvona.leona.core.utils.AnnotationHelper;
+import com.sylvona.leona.proxy.ProxyMachine;
+import com.sylvona.leona.proxy.ReflectionFieldsCopier;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.annotation.Aspect;
@@ -18,23 +18,50 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * A bean post processor that identifies and process classes with the {@link Aspect} or {@link AspectAware} annotations.
+ * This class had the added side effect of storing all {@link Advisor} created by Spring.
+ */
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
 public class AspectBeanRegistry extends AbstractAdvisorAutoProxyCreator {
+    /**
+     * Contains and caches all advisors that are applicable to a specific type.
+     */
     private final Map<Class<?>, List<Advisor>> advisorsByClassMap = new HashMap<>();
-    private final List<Advisor> advisors = new ArrayList<>();
+    /**
+     * The object-to-object field value copier.
+     */
     private final ReflectionFieldsCopier fieldCopier = new ReflectionFieldsCopier();
+    /**
+     * All advisors found by this post processor.
+     */
+    private final List<Advisor> advisors = new ArrayList<>();
+    /**
+     * The spring {@link ApplicationContext}.
+     */
     private final ApplicationContext applicationContext;
+    /**
+     * The {@link ProxyMachine} responsible for creating bean proxies.
+     */
     private final ProxyMachine proxyMachine;
 
+    /**
+     * Processes and attempts to proxy a bean, making it aware of itself as a proxy class.
+     * @param bean the new bean instance
+     * @param beanName the name of the bean
+     * @return the processed bean, or original bean if a proxy couldn't be made
+     * @throws BeansException If an error occurs during bean processing.
+     */
     @Override
-    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+    public Object postProcessBeforeInitialization(@NotNull Object bean, @NotNull String beanName) throws BeansException {
         // Implicit null check
         AspectAware aspectAware = AnnotationHelper.getNestedAnnotation(bean, AspectAware.class);
         if (aspectAware == null) return bean;
@@ -52,15 +79,22 @@ public class AspectBeanRegistry extends AbstractAdvisorAutoProxyCreator {
             Object proxy = proxyMachine.create(bean, advisors, false, true);
             fieldCopier.copyFieldValues(bean, proxy);
             return proxy;
-        } catch (InstantiationException | IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             log.error("Unable to create proxy for bean \"{}\" ({})", bean, beanName);
             log.error("Caused by", e);
             return bean;
         }
     }
 
+    /**
+     * Finds all beans annotated with {@link Aspect} and registers any {@link Advisor} associated with the class.
+     * @param bean the new bean instance
+     * @param beanName the name of the bean
+     * @return the original (unmodified) bean
+     * @throws BeansException If an error occurs during bean processing.
+     */
     @Override
-    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+    public Object postProcessAfterInitialization(Object bean, @NotNull String beanName) throws BeansException {
         if (!AnnotationHelper.hasAnnotation(bean, Aspect.class)) return bean;
         BeanFactory beanFactory = getBeanFactory();
         if (beanFactory == null) return bean;
@@ -71,6 +105,12 @@ public class AspectBeanRegistry extends AbstractAdvisorAutoProxyCreator {
         return bean;
     }
 
+    /**
+     * Get the list of advisors applicable to the given class.
+     *
+     * @param cls The class for which advisors are to be retrieved.
+     * @return The list of applicable advisors.
+     */
     public List<Advisor> getAdvisorsForClass(Class<?> cls) {
         return advisorsByClassMap.computeIfAbsent(cls, c -> AopUtils.findAdvisorsThatCanApply(advisors, c));
     }

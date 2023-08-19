@@ -1,4 +1,4 @@
-package org.lyora.leona.proxy;
+package com.sylvona.leona.proxy;
 
 import lombok.RequiredArgsConstructor;
 import net.bytebuddy.implementation.bind.annotation.*;

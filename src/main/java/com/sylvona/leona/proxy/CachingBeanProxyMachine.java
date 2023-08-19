@@ -1,6 +1,6 @@
-package org.lyora.leona.proxy;
+package com.sylvona.leona.proxy;
 
-import org.lyora.leona.core.utils.SpringBridgeUtils;
+import com.sylvona.leona.core.utils.SpringBridgeUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.ByteBuddy;
@@ -17,25 +17,44 @@ import org.springframework.aop.aspectj.AspectJExpressionPointcut;
 import org.springframework.context.ApplicationContext;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
 
+
+/**
+ * The standard implementation of {@link ProxyMachine} which leverages reflections and spring to create a proxy-aware proxy object.
+ * This class additionally caches the dynamically created proxy class to optimize subsequent proxy creations.
+ */
 @Slf4j
 @RequiredArgsConstructor
 public class CachingBeanProxyMachine implements ProxyMachine {
+    /**
+     * The cache responsible for containing newly generated proxy classes.
+     */
     protected final TypeCache<Class<?>> typeCache = new TypeCache<>();
     private final ApplicationContext applicationContext;
     private final ClassLoader classLoader = getClass().getClassLoader();
 
     @Override
-    public Object create(Object source, List<Advisor> advisors, boolean useCopyConstructor, boolean useSpringAutowiring) throws InstantiationException, IllegalAccessException {
+    public Object create(Object source, List<Advisor> advisors, boolean useCopyConstructor, boolean useSpringAutowiring) throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         Class<?> sourceClass = source.getClass();
         Class<?> proxyClass = typeCache.findOrInsert(classLoader, sourceClass, () -> createDynamicType(source, sourceClass, advisors, useCopyConstructor, useSpringAutowiring).load(classLoader, ClassLoadingStrategy.Default.INJECTION).getLoaded());
-        return proxyClass.newInstance();
+        return proxyClass.getDeclaredConstructor().newInstance();
     }
 
+    /**
+     * Implementation for generating a dynamic class using a provided {@link Advisor} list.
+     *
+     * @param source              The source object to be proxied.
+     * @param sourceClass         The class of the source object.
+     * @param advisors            The list of advisors to be applied to the proxy.
+     * @param useCopyConstructor  Whether to use a copy constructor for proxy creation.
+     * @param useSpringAutowiring Whether to use Spring's autowiring for proxy creation.
+     * @return An unloaded dynamic type representing the proxy class.
+     */
     protected DynamicType.Unloaded<?> createDynamicType(Object source, Class<?> sourceClass, List<Advisor> advisors, boolean useCopyConstructor, boolean useSpringAutowiring) {
 
         DynamicType.Builder<?> typeBuilder = new ByteBuddy().subclass(sourceClass);

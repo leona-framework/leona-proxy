@@ -1,6 +1,7 @@
-package org.lyora.leona.proxy;
+package com.sylvona.leona.proxy.aspects;
 
-import org.lyora.leona.proxy.aspects.AspectProducerAspect;
+import com.sylvona.leona.proxy.CachingBeanProxyMachine;
+import com.sylvona.leona.proxy.ProxyMachine;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;

@@ -1,4 +1,4 @@
-package org.lyora.leona.proxy.aspects;
+package com.sylvona.leona.proxy.aspects;
 
 import org.springframework.core.annotation.AliasFor;
 
@@ -7,6 +7,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Classes with this annotation will have their method return values automatically processed
+ * by Spring and Leona's bean proxying system, enabling the dynamic creation of proxies with modified behavior.
+ */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @AspectAware(AspectProducerAspect.class)
@@ -38,16 +42,28 @@ public @interface ProxyProducer {
      */
     Class<?>[] targetTypes() default void.class;
 
+    /**
+     * Specifies methods that should be excluded from proxying based on conditions defined within the annotation.
+     */
     @Target(ElementType.METHOD)
     @Retention(RetentionPolicy.RUNTIME)
     @interface ExcludeWhen {
+        /**
+         * Specifies the filter method that determines whether the annotated method should be excluded from proxying.
+         */
         @AliasFor("filterMethod")
         String value() default "";
 
+        /**
+         * Specifies the filter method that determines whether the annotated method should be excluded from proxying.
+         */
         @AliasFor("value")
         String filterMethod() default "";
     }
 
+    /**
+     * Specifies methods that should always be excluded from proxying.
+     */
     @Target(ElementType.METHOD)
     @Retention(RetentionPolicy.RUNTIME)
     @interface ExcludeAlways { }

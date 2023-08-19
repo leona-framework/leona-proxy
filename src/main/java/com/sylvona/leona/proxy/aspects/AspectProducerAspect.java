@@ -1,7 +1,7 @@
-package org.lyora.leona.proxy.aspects;
+package com.sylvona.leona.proxy.aspects;
 
-import org.lyora.leona.proxy.ProxyMachine;
-import org.lyora.leona.proxy.ReflectionFieldsCopier;
+import com.sylvona.leona.proxy.ProxyMachine;
+import com.sylvona.leona.proxy.ReflectionFieldsCopier;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -23,15 +23,15 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 @Import(AspectBeanRegistry.class)
-public class AspectProducerAspect {
+class AspectProducerAspect {
     private final ReflectionFieldsCopier fieldCopier = new ReflectionFieldsCopier();
     private final AspectBeanRegistry aspectBeanRegistry;
     private final ProxyMachine proxyMachine;
 
-    @Pointcut("within(@org.lyora.leona.proxy.aspects.ProxyProducer *)")
+    @Pointcut("within(@com.sylvona.leona.proxy.aspects.ProxyProducer *)")
     public void findAspectProducers() {}
 
-    @Pointcut("execution(!void *(..)) && !execution(@org.lyora.leona.proxy.aspects.ProxyProducer.ExcludeAlways * *(..))")
+    @Pointcut("execution(!void *(..)) && !execution(@com.sylvona.leona.proxy.aspects.ProxyProducer.ExcludeAlways * *(..))")
     public void findNonVoidMethods() {}
 
     @Pointcut("findAspectProducers() && findNonVoidMethods()")

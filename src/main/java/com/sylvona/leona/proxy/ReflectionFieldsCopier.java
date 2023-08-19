@@ -1,4 +1,4 @@
-package org.lyora.leona.proxy;
+package com.sylvona.leona.proxy;
 
 import org.apache.commons.lang3.reflect.FieldUtils;
 
@@ -9,6 +9,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * A utility class which copies field values from one object to another and caches all successfully copied fields.
+ */
 public class ReflectionFieldsCopier {
     private final Map<Class<?>, List<Field>> reflectionEligibleFields = new HashMap<>();
 
@@ -17,11 +20,13 @@ public class ReflectionFieldsCopier {
      * Eligible fields are non-static and non-final fields of the same type or a subtype.
      * This method caches the eligible fields for future use to improve performance.
      *
+     * @param <S>    The type of the source object
+     * @param <T>    The type of the target object
      * @param source The source object from which fields will be copied.
      * @param target The target object to which fields will be copied.
      * @throws IllegalArgumentException If the source or target object is null.
      */
-    public <S, T extends S> void copyFieldValues(T source, S target) {
+    public <S, T extends S> void copyFieldValues(S source, T target) {
         Class<?> originalClass = source.getClass();
         List<Field> eligibleCopyFields = reflectionEligibleFields.get(originalClass);
 
