@@ -2,7 +2,6 @@ package com.sylvona.leona.proxy;
 
 import lombok.RequiredArgsConstructor;
 import net.bytebuddy.implementation.bind.annotation.*;
-import org.apache.commons.lang3.reflect.MethodUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.reflect.MethodSignature;
@@ -17,7 +16,7 @@ import java.util.concurrent.Callable;
 import java.util.function.Function;
 
 @RequiredArgsConstructor
-public class CompositedProceedingJoinPoint implements ProceedingJoinPoint {
+class CompositedProceedingJoinPoint implements ProceedingJoinPoint {
     private final Function<ProceedingJoinPoint, Object> joinPointFunction;
 
     private Callable<?> defaultCall;
